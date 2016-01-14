@@ -1,0 +1,176 @@
+<html>
+
+<head>
+    <title>Test Handle Modal</title>
+    <script type="text/javascript" src="../bower_components/jquery/dist/jquery.js"></script>
+    <script type="text/javascript" src="../bower_components/handlebars/handlebars.js"></script>
+    <script type="text/javascript" src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css">
+
+    <script id="handle-demo" type="text/x-handlebars-template">
+        <!-- Modal content -->
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    <p>Some text in the modal.</p>
+                    <div>
+                        My name is {{name}}. I am a {{occupation}}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script id="incident-report" type="text/x-handlebars">
+
+        <!-- HTML comment -->
+        The is parametrization {{variable}}
+
+        <!-- Allow html tag content use: triple <TAG>bla bla bla</TAG>-->
+
+        Im learning {{{tripleTag}}} and {{doubleTag}}
+
+        <!-- Handle bars comments  THIS IS VISIBLE!!!!-->
+        {{!COMMENT GOES HERE THIS IS INVISIBLE}}
+
+
+        <!-- handle bar allows js boolean expressions and block content -->
+
+        {{#if showContent}}
+            some content goes here {{variable}}
+        {{/if}}
+
+        <!-- handle bar paths -->
+
+        <p>This article is available on {{object.atribute}}</p>
+        {{#each object.childs}}
+        I am a {{../name}}. My name is {{firstname}} {{lastname}}<br>
+        {{/each}}
+
+        <!-- Helpers : if, each, unless, with-->
+
+        {{#if country}}
+        {{#each country}}
+        {{@index}} : {{this}}
+        {{/each}}
+        {{else}}
+        There are no countries
+        {{/if}}
+
+        <br>
+        <!-- this is a partial -->
+        {{> partialTemplate message="hellWorld"}}
+
+    </script>
+
+</head>
+
+
+<body>
+<div id="content">
+
+</div>
+<button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#modal">OpenModal</button>
+<div id="modal" class="modal fade" role="dialog">
+
+</div>
+<div id="test">
+
+</div>
+<script type="text/javascript">
+
+    // retrieve the template data from the HTML
+    var template = $('#handle-demo').html();
+
+    // compile the template data into a function
+    var templateScript = Handlebars.compile(template);
+
+    // context => JSON data set to feed the templateScript
+    var context = {
+        name: "2XL",
+        occupation: "Coder"
+    };
+
+
+    var html = templateScript(context);
+
+    $('#modal').append(html); // this is a modal!!!
+    $(document.body).append(html); // feed the current html
+
+
+    // testing code
+
+    var report = $('#incident-report').html();
+    var reportScript = Handlebars.compile(report);
+    var reportContext = {
+        showContent: true,
+        variable: "This is A VARIABLE!!!",
+        tripleTag: "<h3>tripleTAG</h3>",
+        doubleTag: "<h2>doubleTAG</h2>",
+        country: ['china', 'holland', 'spain', 'portugal', 'france'],
+        object: {
+            name: "jedi",
+            childs: [
+                {
+                    firstname: "luke",
+                    lastname: "skywalker"
+                },
+                {
+                    firstname: "dade",
+                    lastname: "faker"
+                },
+                {
+                    firstname: "cheng",
+                    lastname: "long"
+
+                }
+            ]
+        },
+        global: "globalVariable"
+
+    };
+
+    // customization of helpers...
+    Handlebars.registerHelper("HelperName", function(args){
+        // there is a default options object that allows temporal context
+        console.log(args);
+        // this function is executed whenever this helper is used.
+    });
+
+    // there are even partial templates xD
+    var name = "partialTemplate";
+    var partial = "{{message}}, You are rendering a partial!!! {{global}}";
+    Handlebars.registerPartial(name, partial);
+
+    // helper to plot pieCharts :D
+
+
+    var htmlReport = reportScript(reportContext);
+    $('#test').append(htmlReport); // this is a modal!!!
+
+
+    // handle bar pre-compilation // this is the most expansive operation to be performed at the client.
+    // the pre-compilation should [MUST in our use case] be done with django!!!
+    // store the template precompiled but it lacks django variables ...
+
+    // > handlebars path/to/template -f outputTemplatesScript.js
+    // outputTemplatesScirpts.js will cointain all the precompiled scripts for the pdf generation...
+    //
+
+
+
+
+</script>
+
+</body>
+
+
+</html>

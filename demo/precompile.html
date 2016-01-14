@@ -1,0 +1,29 @@
+<head>
+<head>
+
+    <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/handlebars/handlebars.runtime.js"></script>
+
+    <!-- the runtime compiler will insert the template compiled into the handdleber.template directory-->
+    <script src="../templatesCompiled.js"></script>
+    <!-- the template was compiled from template.hbs so to load it will also be template-->
+
+</head>
+
+<body>
+<script type="text/javascript">
+
+
+    var context = {
+        name: "chen long"
+    };
+    var templateScript = Handlebars.templates['template.hbs'];
+    var html = templateScript(context);
+    console.log(html);
+    $(document.body).append(html);
+
+
+</script>
+
+</body>
+</html>
